@@ -17,7 +17,6 @@ class Cube:
         self.faces_names = ["Front", "Back", "Up", "Down", "Left", "Right"]
         self.state = { face : [[COLORS[i]] * (self.dimension) for _ in range(self.dimension)] for i, face in enumerate(self.faces_names)}
         self.move_names = [axis + "{}".format(i) for axis in AXES for i in range(self.dimension)]
-        self.move_set = {}
 
     def move(self, move_type, amount = 1):
         amount = amount % 4
