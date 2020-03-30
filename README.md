@@ -6,7 +6,7 @@ Create a standard 3x3x3 cube:
 cube = Cube()
 print(cube) #Should print out the cube colored and well formatted!
 ```
-To create a NxNxN cube you can simply provide N-2 as the constructor argument:
+To create a NxNxN cube you can simply provide N as the constructor argument:
 ```python
 N = 10 #whatever you like
 cube = Cube(N)
