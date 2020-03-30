@@ -11,12 +11,14 @@ AXES = ["X", "Y", "Z"]
 
 class Cube:
     
-    def __init__(self, rank = 1):
-        self.rank = rank
-        self.dimension = rank + 2
+    def __init__(self, size = 3):
+        if size < 1:
+            raise ValueError("The size of the cube must be greater than one.")
+        self.rank = size - 2
+        self.size = size
         self.faces_names = ["Front", "Back", "Up", "Down", "Left", "Right"]
-        self.state = { face : [[COLORS[i]] * (self.dimension) for _ in range(self.dimension)] for i, face in enumerate(self.faces_names)}
-        self.move_names = [axis + "{}".format(i) for axis in AXES for i in range(self.dimension)]
+        self.state = { face : [[COLORS[i]] * (self.size) for _ in range(self.size)] for i, face in enumerate(self.faces_names)}
+        self.move_names = [axis + "{}".format(i) for axis in AXES for i in range(self.size)]
 
     def move(self, move_type, amount = 1):
         amount = amount % 4
@@ -24,27 +26,27 @@ class Cube:
         if move_type[0] == 'X':
             for _ in range(amount): 
                 col_index = int(move_type[1])
-                for row_index in range(self.dimension):
+                for row_index in range(self.size):
                     #Up <- Front
                     up_temp = self.state['Up'][row_index][col_index]
                     self.state['Up'][row_index][col_index] = self.state['Front'][row_index][col_index]
                     #Front <- Down
                     self.state['Front'][row_index][col_index] = self.state['Down'][row_index][col_index]
                     #Down <- Back
-                    self.state['Down'][row_index][col_index] = self.state['Back'][self.dimension - 1 - row_index][self.dimension - 1 - col_index]
+                    self.state['Down'][row_index][col_index] = self.state['Back'][self.size - 1 - row_index][self.size - 1 - col_index]
                     #Back <- Up
-                    self.state['Back'][self.dimension - 1 - row_index][self.dimension - 1 - col_index] = up_temp
+                    self.state['Back'][self.size - 1 - row_index][self.size - 1 - col_index] = up_temp
                 
                 #if it is the first or last row rotate the left or right face
                 if col_index == 0:
                     self._rotate_face(self.state['Left'], False)
-                elif col_index == self.dimension - 1:
+                elif col_index == self.size - 1:
                     self._rotate_face(self.state['Right'])
                     
         elif move_type[0] == 'Y':
             for _ in range(amount): 
-                row_index = self.dimension - 1 - int(move_type[1])
-                for col_index in range(self.dimension):
+                row_index = self.size - 1 - int(move_type[1])
+                for col_index in range(self.size):
                     #Front <- Right
                     front_temp = self.state['Front'][row_index][col_index]
                     self.state['Front'][row_index][col_index] = self.state['Right'][row_index][col_index]
@@ -55,26 +57,26 @@ class Cube:
                     #Left <- Front
                     self.state['Left'][row_index][col_index] = front_temp
                 
-                if row_index == self.dimension - 1:
+                if row_index == self.size - 1:
                     self._rotate_face(self.state['Down'], False)
                 elif row_index == 0:
                     self._rotate_face(self.state['Up'])
                     
         elif move_type[0] == 'Z':
             for _ in range(amount): 
-                row_index = self.dimension - 1 - int(move_type[1])
-                for col_index in range(self.dimension):
+                row_index = self.size - 1 - int(move_type[1])
+                for col_index in range(self.size):
                     #Up <- Right
                     up_temp = self.state['Up'][row_index][col_index]
-                    self.state['Up'][row_index][col_index] = self.state['Right'][col_index][self.dimension - 1 - row_index]
+                    self.state['Up'][row_index][col_index] = self.state['Right'][col_index][self.size - 1 - row_index]
                     #Right <- Down
-                    self.state['Right'][col_index][self.dimension - 1 - row_index] = self.state['Down'][self.dimension - 1 - row_index][self.dimension - 1 - col_index]
+                    self.state['Right'][col_index][self.size - 1 - row_index] = self.state['Down'][self.size - 1 - row_index][self.size - 1 - col_index]
                     #Down <- Left
-                    self.state['Down'][self.dimension - 1 - row_index][self.dimension - 1 - col_index] = self.state['Left'][self.dimension - 1 - col_index][row_index]
+                    self.state['Down'][self.size - 1 - row_index][self.size - 1 - col_index] = self.state['Left'][self.size - 1 - col_index][row_index]
                     #Left <- Up
-                    self.state['Left'][self.dimension - 1 - col_index][row_index] = up_temp
+                    self.state['Left'][self.size - 1 - col_index][row_index] = up_temp
                 
-                if row_index == self.dimension - 1:
+                if row_index == self.size - 1:
                     self._rotate_face(self.state['Front'], False)
                 elif row_index == 0:
                     self._rotate_face(self.state['Back'])
@@ -110,8 +112,8 @@ class Cube:
     def is_solved(self):
         for face_name in self.faces_names:
             color = self.state[face_name][0][0]
-            for i in range(self.dimension):
-                for j in range(self.dimension):
+            for i in range(self.size):
+                for j in range(self.size):
                     if self.state[face_name][i][j] != color:
                         return False
         return True
@@ -125,7 +127,7 @@ class Cube:
                 string += colored(quad, COLORS_DICT[quad]) + " "
             string += "\n"
         
-        for row_index in range(self.dimension):
+        for row_index in range(self.size):
             for quad in self.state["Left"][row_index]:
                 string += colored(quad, COLORS_DICT[quad]) + " "
             for quad in self.state["Front"][row_index]:

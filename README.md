@@ -9,10 +9,8 @@ print(cube) #Should print out the cube colored and well formatted!
 To create a NxNxN cube you can simply provide N-2 as the constructor argument:
 ```python
 N = 10 #whatever you like
-cube = Cube(N - 2)
+cube = Cube(N)
 ```
-**Note** : Will probably remove the need for the -2 in future update...
-
 Moves are identifies by a string of 2 characters:  The first character identifies the rotation axis.  
 The second character identifies the row/column to rotate.  
 Example : ```'X0'``` or ```'Y2'```  
